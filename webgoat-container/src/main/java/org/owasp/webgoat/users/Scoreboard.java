@@ -45,7 +45,7 @@ public class Scoreboard {
     }
 
     private List<String> challengesSolved(UserTracker userTracker) {
-        List<String> challenges = Lists.newArrayList("Challenge1", "Challenge2", "Challenge3", "Challenge4", "Challenge5");
+        List<String> challenges = Lists.newArrayList("Challenge1", "Challenge2", "Challenge3", "Challenge4", "Challenge5", "Challenge6", "Challenge7", "Challenge8", "Challenge9");
         return challenges.stream()
                 .map(c -> userTracker.getLessonTracker(c))
                 .filter(l -> l.isPresent()).map(l -> l.get())

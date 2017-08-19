@@ -11,11 +11,10 @@ import org.owasp.webgoat.plugin.SolutionConstants;
 import org.owasp.webgoat.users.UserRepository;
 import org.owasp.webgoat.users.WebGoatUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,7 +67,7 @@ public class Assignment7 extends AssignmentEndpoint {
                 Mailbox mailbox = new Mailbox();
                 mailbox = (Mailbox) emails.getOrDefault(username, mailbox);
                 mailbox.addMail(Mailbox.Email.builder()
-                        .title("Your password reset link")
+                        .title("Your password reset link for challenge 7")
                         .contents(String.format(TEMPLATE, new PasswordResetLink().createPasswordReset(username, "webgoat")))
                         .sender("password-reset@webgoat-cloud.net")
                         .time(LocalDateTime.now()).build());
@@ -81,8 +80,8 @@ public class Assignment7 extends AssignmentEndpoint {
     @RequestMapping(method = GET, value="/.git", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     @SneakyThrows
-    public FileSystemResource git() {
-        return new FileSystemResource(ResourceUtils.getFile("classpath:challenge7/git.zip"));
+    public ClassPathResource git() {
+        return new ClassPathResource("challenge7/git.zip");
     }
 }
 

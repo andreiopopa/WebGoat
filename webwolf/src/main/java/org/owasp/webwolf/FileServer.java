@@ -32,7 +32,7 @@ public class FileServer {
     @Value("${webwolf.fileserver.location}")
     private String fileLocatation;
 
-    @PostMapping(value = "/fileupload")
+    @PostMapping(value = "/WebWolf/fileupload")
     @SneakyThrows
     public ModelAndView importFile(@RequestParam("file") MultipartFile myFile) {
         WebGoatUser user = (WebGoatUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -58,7 +58,7 @@ public class FileServer {
         private final String link;
     }
 
-    @GetMapping(value = "/files")
+    @GetMapping(value = "/WebWolf/files")
     public ModelAndView getFiles(HttpServletRequest request) {
         WebGoatUser user = (WebGoatUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = user.getUsername();

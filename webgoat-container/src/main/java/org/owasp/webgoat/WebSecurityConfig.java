@@ -69,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordParameter("password")
                 .permitAll();
         security.and()
-                .logout()
+                .logout().deleteCookies("JSESSIONID").invalidateHttpSession(true)
                 .permitAll();
         security.and().csrf().disable();
 

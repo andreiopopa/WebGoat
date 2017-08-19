@@ -17,10 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -33,7 +30,7 @@ import static java.util.stream.Collectors.toList;
 @Controller
 @AllArgsConstructor
 @Slf4j
-@RequestMapping(value = "/requests")
+@RequestMapping(value = "/WebWolf/requests")
 public class Requests {
 
     private final WebWolfTraceRepository traceRepository;
@@ -51,10 +48,11 @@ public class Requests {
     @GetMapping
     public ModelAndView get(HttpServletRequest request) {
         ModelAndView m = new ModelAndView("requests");
-        getUserCookie().ifPresent(c -> {
-            List<Tracert> traces = traceRepository.findTraceForCookie(c).stream().map(t -> new Tracert(t.getTimestamp(), path(t), toJsonString(t))).collect(toList());
-            m.addObject("traces", traces);
-        });
+        WebGoatUser user = (WebGoatUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Tracert> traces = traceRepository.findTraceForUser(user.getUsername()).stream()
+                .map(t -> new Tracert(t.getTimestamp(), path(t), toJsonString(t))).collect(toList());
+        m.addObject("traces", traces);
+
         return m;
     }
 
@@ -70,14 +68,4 @@ public class Requests {
         }
         return "No request(s) found";
     }
-
-    private Optional<Cookie> getUserCookie() {
-        WebGoatUser user = (WebGoatUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String cookieValue = (String) hazelcastInstance.getMap("userSessions").get(user.getUsername());
-        if (cookieValue != null) {
-            return of(new Cookie(cookieValue));
-        }
-        return empty();
-    }
-
 }

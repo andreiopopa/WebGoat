@@ -11,14 +11,14 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class WebWolfController {
 
-    @GetMapping(value = "/login")
+    @GetMapping(value = "/WebWolf/login")
     public ModelAndView login() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login");
         return modelAndView;
     }
 
-    @GetMapping(value = {"/", "/home"})
+    @GetMapping(value = {"/WebWolf", "/WebWolf/home"})
     public ModelAndView home() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("home");

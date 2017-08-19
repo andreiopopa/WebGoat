@@ -18,7 +18,7 @@ public class MailboxController {
 
     private final MailboxRepository mailboxRepository;
 
-    @GetMapping(value = "/mail")
+    @GetMapping(value = "/WebWolf/mail")
     public ModelAndView mail() {
         WebGoatUser user = (WebGoatUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ModelAndView modelAndView = new ModelAndView();
