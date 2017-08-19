@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
 /**
@@ -54,7 +53,7 @@ public class WebWolfTraceRepository implements TraceRepository {
         Optional<String> host = getFromHeaders("host", map);
         String path = (String) map.getOrDefault("path", "");
         if (host.isPresent()  && ("/".equals(path) || path.contains("challenge"))) {
-            Optional<Cookie> cookie = getFromHeaders("cookie", map).map(c -> of(new Cookie(c))).orElse(empty());
+            Optional<String> cookie = getFromHeaders("cookie", map);
             cookie.ifPresent(c -> {
                 Optional<String> user = determineUser(c);
                 user.ifPresent(u -> {
@@ -67,10 +66,10 @@ public class WebWolfTraceRepository implements TraceRepository {
         }
     }
 
-    private Optional<String> determineUser(Cookie cookieIncomingRequest) {
+    private Optional<String> determineUser(String cookiesIncomingRequest) {
         //Request from WebGoat to WebWolf will contain the session cookie of WebGoat try to map it to a user
         //this mapping is added to userSession by the CookieFilter in WebGoat code
-        Optional<Map.Entry<String, String>> userEntry = this.userSessions.entrySet().stream().filter(e -> new Cookie(e.getValue()).equals(cookieIncomingRequest)).findFirst();
+        Optional<Map.Entry<String, String>> userEntry = this.userSessions.entrySet().stream().filter(e -> cookiesIncomingRequest.contains(e.getValue())).findFirst();
         Optional<String> user = userEntry.map(e -> e.getKey());
 
         if (!user.isPresent()) {

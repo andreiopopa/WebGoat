@@ -6,6 +6,7 @@ import com.google.common.collect.EvictingQueue;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -45,6 +46,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * @since 4/8/17.
  */
 @AssignmentPath("/challenge/3")
+@Slf4j
 public class Assignment3 extends AssignmentEndpoint {
 
     @Value("${webgoat.server.directory}")
@@ -66,10 +68,11 @@ public class Assignment3 extends AssignmentEndpoint {
     @PostConstruct
     @SneakyThrows
     public void copyFile() {
-        File targetDirectory = new File(webGoatHomeDirectory, "/challenges");
+        File targetDirectory = new File(webGoatHomeDirectory);
         if (!targetDirectory.exists()) {
             targetDirectory.mkdir();
         }
+        log.info("Copied secret.txt to: {}", targetDirectory);
         Files.write(secretContents, new File(targetDirectory, "secret.txt"), Charset.defaultCharset());
     }
 
