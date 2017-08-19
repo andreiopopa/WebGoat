@@ -56,14 +56,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry security = http
                 .authorizeRequests()
                 .antMatchers("/css/**", "/images/**", "/js/**", "/fonts/**", "/webjars/**").permitAll()
-                .antMatchers("WebWolf/login").permitAll()
                 .antMatchers("/WebWolf/**").authenticated()
                 .anyRequest().permitAll();
         security.and().csrf().disable().formLogin()
-                .loginPage("/WebWolf/login").failureUrl("/WebWolf/login?error=true");
+                .loginPage("/login").failureUrl("/login?error=true");
         security.and()
                 .formLogin()
-                .loginPage("/WebWolf/login")
+                .loginPage("/login")
                 .defaultSuccessUrl("/WebWolf/home", true)
                 .permitAll();
         security.and()
