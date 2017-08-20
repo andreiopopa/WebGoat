@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div class="lesson-page-wrapper">
+    <div class="adoc-content" th:replace="doc:Introduction.adoc"></div>
+</div>
+
+<div class="lesson-page-wrapper">
+    <div class="adoc-content" th:replace="doc:Uploading_files.adoc"></div>
+</div>
+
+<div class="lesson-page-wrapper">
+</div>
+
+<div class="lesson-page-wrapper">
+    <div class="adoc-content" th:replace="doc:Receiving_mail.adoc"></div>
+    <div class="attack-container">
+        <div class="assignment-success"><i class="fa fa-2 fa-check hidden" aria-hidden="true"></i></div>
+        <form class="attack-form" accept-charset="UNKNOWN"
+              method="POST" name="form"
+              action="/WebGoat/SqlInjection/attack5a"
+              enctype="application/json;charset=UTF-8">
+            <table>
+                <tr>
+                    <td>Account Name:</td>
+                    <td><input name="account" value="" type="TEXT"/></td>
+                    <td><input
+                            name="Get Account Info" value="Get Account Info" type="SUBMIT"/></td>
+                </tr>
+            </table>
+        </form>
+        <div class="attack-feedback"></div>
+        <div class="attack-output"></div>
+    </div>
+</div>
+
+
+
+<div class="lesson-page-wrapper">
+    <div class="adoc-content" th:replace="doc:Landing_page.adoc"></div>
+</div>
+
+
+
+<div class="lesson-page-wrapper">
+    <div class="adoc-content" th:replace="doc:SqlInjection_content5b.adoc"></div>
+    <div class="attack-container">
+        <div class="assignment-success"><i class="fa fa-2 fa-check hidden" aria-hidden="true"></i></div>
+        <form class="attack-form" accept-charset="UNKNOWN"
+              method="POST" name="form"
+              action="/WebGoat/SqlInjection/attack5b"
+              enctype="application/json;charset=UTF-8">
+            <table>
+                <tr>
+                    <td>Name:</td>
+                    <td><input name="userid" value="" type="TEXT"/></td>
+                    <td><input
+                            name="Get Account Info" value="Get Account Info" type="SUBMIT"/></td>
+                    <td></td>
+                </tr>
+            </table>
+        </form>
+        <div class="attack-feedback"></div>
+        <div class="attack-output"></div>
+    </div>
+</div>
+
+</html>
