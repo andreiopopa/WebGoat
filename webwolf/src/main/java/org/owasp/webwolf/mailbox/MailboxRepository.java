@@ -11,6 +11,6 @@ import java.util.List;
  */
 public interface MailboxRepository extends MongoRepository<Email, ObjectId> {
 
-    List<Email> findByRecipient(String recipient);
+    List<Email> findByRecipientOrderByTimeDesc(String recipient);
 
 }

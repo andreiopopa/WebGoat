@@ -23,7 +23,7 @@ public class MailboxController {
     public ModelAndView mail() {
         WebGoatUser user = (WebGoatUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ModelAndView modelAndView = new ModelAndView();
-        List<Email> emails = mailboxRepository.findByRecipient(user.getUsername());
+        List<Email> emails = mailboxRepository.findByRecipientOrderByTimeDesc(user.getUsername());
         if (emails != null && !emails.isEmpty()) {
             modelAndView.addObject("total", emails.size());
             modelAndView.addObject("emails", emails);

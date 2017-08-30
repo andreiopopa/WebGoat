@@ -16,6 +16,9 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 
 import static org.owasp.webgoat.plugin.Flag.FLAGS;
@@ -31,7 +34,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 public class Assignment7 extends AssignmentEndpoint {
 
     private static final String TEMPLATE = "Hi, you requested a password reset link, please use this " +
-            "<a target='_blank' href='http://localhost:8080/WebGoat/challenge/7/reset-password/%s'>link</a> to reset your password." +
+            "<a target='_blank' href='%s:8080/WebGoat/challenge/7/reset-password/%s'>link</a> to reset your password." +
             "\n \n\n" +
             "If you did not request this password change you can ignore this message." +
             "\n" +
@@ -54,13 +57,14 @@ public class Assignment7 extends AssignmentEndpoint {
 
     @RequestMapping(method = POST)
     @ResponseBody
-    public AttackResult sendPasswordResetLink(@RequestParam String email) {
+    public AttackResult sendPasswordResetLink(@RequestParam String email, HttpServletRequest request) throws URISyntaxException {
         if (StringUtils.hasText(email)) {
             String username = email.substring(0, email.indexOf("@"));
             if (StringUtils.hasText(username)) {
+                URI uri = new URI(request.getRequestURL().toString());
                 IncomingMailEvent mail = IncomingMailEvent.builder()
                         .title("Your password reset link for challenge 7")
-                        .contents(String.format(TEMPLATE, new PasswordResetLink().createPasswordReset(username, "webgoat")))
+                        .contents(String.format(TEMPLATE, uri.getScheme() + "://" + uri.getHost(), new PasswordResetLink().createPasswordReset(username, "webgoat")))
                         .sender("password-reset@webgoat-cloud.net")
                         .recipient(username)
                         .time(LocalDateTime.now()).build();
