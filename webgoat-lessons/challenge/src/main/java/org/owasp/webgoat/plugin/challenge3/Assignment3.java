@@ -7,7 +7,6 @@ import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -109,14 +108,14 @@ public class Assignment3 extends AssignmentEndpoint {
             userComments.put(webSession.getUserName(), comments);
         }
         if (checkSolution(comment)) {
-            attackResult = success().feedback("challenge.solved").feedbackArgs(Flag.FLAGS.get(2)).build();
+            attackResult = success().feedback("challenge.solved").feedbackArgs(Flag.FLAGS.get(3)).build();
         }
         return attackResult;
     }
 
     private boolean checkSolution(Comment comment) {
-        if (StringUtils.equals(comment.getText(), secretContents)) {
-            comment.setText("Congratulations to " + webSession.getUserName() + " for finding the flag!!");
+        if (comment.getText().contains(secretContents)) {
+            comment.setText("Congratulations to " + webSession.getUserName() + " for finding the flag!! Check your original response where you posted the XXE attack ");
             comments.add(comment);
             return true;
         }
