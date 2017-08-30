@@ -2,11 +2,10 @@ package org.owasp.webwolf.requests;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hazelcast.core.HazelcastInstance;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.owasp.webwolf.WebGoatUser;
+import org.owasp.webwolf.user.WebGoatUser;
 import org.springframework.boot.actuate.trace.Trace;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -35,7 +34,6 @@ public class Requests {
 
     private final WebWolfTraceRepository traceRepository;
     private final ObjectMapper objectMapper;
-    private final HazelcastInstance hazelcastInstance;
 
     @AllArgsConstructor
     @Getter

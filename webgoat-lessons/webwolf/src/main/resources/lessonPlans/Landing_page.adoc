@@ -1,8 +1,0 @@
-== Landing page
-
-This page will show all the requests made to '/' or '/challenge'. This means
-you can use WebWolf as your landing page for harvesting cookies etc which
-is helpful when you perform a XSS lesson.
-
-image::images/requests.png[caption="Figure: ", style="lesson-image"]
-

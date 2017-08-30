@@ -30,7 +30,6 @@
  */
 package org.owasp.webgoat;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.Context;
 import org.owasp.webgoat.plugins.PluginEndpointPublisher;
@@ -42,7 +41,6 @@ import org.owasp.webgoat.session.WebgoatContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.hazelcast.HazelcastAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatContextCustomizer;
@@ -50,15 +48,13 @@ import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletCon
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.io.File;
 import java.util.Arrays;
 
-@SpringBootApplication(exclude=HazelcastAutoConfiguration.class) //Only necessary when server starts (StartWebGoat)
+@SpringBootApplication
 @Slf4j
 public class WebGoat extends SpringBootServletInitializer {
 
@@ -69,15 +65,6 @@ public class WebGoat extends SpringBootServletInitializer {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(WebGoat.class, args);
-    }
-
-    @Bean
-    @Primary
-    public Jackson2ObjectMapperBuilder jacksonBuilder() {
-        Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
-        builder.indentOutput(true);
-        builder.serializationInclusion(JsonInclude.Include.NON_NULL);
-        return builder;
     }
 
     @Bean(name = "pluginTargetDirectory")
@@ -94,7 +81,7 @@ public class WebGoat extends SpringBootServletInitializer {
     @Bean
     @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
     public UserSessionData userSessionData() {
-        return new UserSessionData("test","data");
+        return new UserSessionData("test", "data");
     }
 
     @Bean

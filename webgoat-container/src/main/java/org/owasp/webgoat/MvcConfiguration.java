@@ -31,16 +31,13 @@
 package org.owasp.webgoat;
 
 import com.google.common.collect.Sets;
-import com.hazelcast.core.HazelcastInstance;
 import org.owasp.webgoat.i18n.Language;
 import org.owasp.webgoat.i18n.Messages;
 import org.owasp.webgoat.i18n.PluginMessages;
 import org.owasp.webgoat.session.Course;
 import org.owasp.webgoat.session.LabelDebugger;
-import org.owasp.webgoat.users.CookieFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

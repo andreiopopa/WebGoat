@@ -31,6 +31,8 @@
 package org.owasp.webgoat;
 
 import lombok.AllArgsConstructor;
+import org.owasp.webgoat.login.LoginHandler;
+import org.owasp.webgoat.login.LogoutHandler;
 import org.owasp.webgoat.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -52,6 +54,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userDetailsService;
+    private final LoginHandler loginHandler;
+    private final LogoutHandler logoutHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -67,10 +71,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/welcome.mvc", true)
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .permitAll();
+                .permitAll().successHandler(loginHandler);
         security.and()
                 .logout().deleteCookies("JSESSIONID").invalidateHttpSession(true)
-                .permitAll();
+                .permitAll().logoutSuccessHandler(logoutHandler);
         security.and().csrf().disable();
 
         http.headers().cacheControl().disable();

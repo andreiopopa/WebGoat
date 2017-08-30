@@ -1,16 +1,20 @@
 package org.owasp.webwolf.requests;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
 import lombok.extern.slf4j.Slf4j;
-import org.owasp.webwolf.WebGoatUser;
+import org.owasp.webwolf.user.WebGoatUser;
+import org.owasp.webwolf.user.WebGoatUserCookie;
+import org.owasp.webwolf.user.WebGoatUserToCookieRepository;
 import org.springframework.boot.actuate.trace.Trace;
 import org.springframework.boot.actuate.trace.TraceRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.net.HttpCookie;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -26,14 +30,17 @@ import static java.util.Optional.of;
 @Slf4j
 public class WebWolfTraceRepository implements TraceRepository {
 
-    private final String webGoatPort;
-    private final Map<String, ConcurrentLinkedDeque<Trace>> cookieTraces;
-    private final IMap<String, String> userSessions;
+    private final LoadingCache<String, ConcurrentLinkedDeque<Trace>> cookieTraces = CacheBuilder.newBuilder()
+            .maximumSize(4000).build(new CacheLoader<String, ConcurrentLinkedDeque<Trace>>() {
+                @Override
+                public ConcurrentLinkedDeque<Trace> load(String s) throws Exception {
+                    return new ConcurrentLinkedDeque<>();
+                }
+            });
+    private final WebGoatUserToCookieRepository repository;
 
-    public WebWolfTraceRepository(String webGoatPort, HazelcastInstance hazelcastInstance) {
-        this.webGoatPort = webGoatPort;
-        this.cookieTraces = hazelcastInstance.getMap("cookieTraces");
-        this.userSessions = hazelcastInstance.getMap("userSessions");
+    public WebWolfTraceRepository(WebGoatUserToCookieRepository repository) {
+        this.repository = repository;
     }
 
     @Override
@@ -45,19 +52,19 @@ public class WebWolfTraceRepository implements TraceRepository {
     }
 
     public List<Trace> findTraceForUser(String username) {
-        return Lists.newArrayList(cookieTraces.getOrDefault(username, new ConcurrentLinkedDeque<>()));
+        return Lists.newArrayList(cookieTraces.getUnchecked(username));
     }
 
     @Override
     public void add(Map<String, Object> map) {
         Optional<String> host = getFromHeaders("host", map);
         String path = (String) map.getOrDefault("path", "");
-        if (host.isPresent()  && ("/".equals(path) || path.contains("challenge"))) {
+        if (host.isPresent() && ("/".equals(path) || path.contains("challenge"))) {
             Optional<String> cookie = getFromHeaders("cookie", map);
             cookie.ifPresent(c -> {
-                Optional<String> user = determineUser(c);
+                Optional<String> user = findUserBasedOnCookie(c);
                 user.ifPresent(u -> {
-                    ConcurrentLinkedDeque<Trace> traces = this.cookieTraces.getOrDefault(u, new ConcurrentLinkedDeque<>());
+                    ConcurrentLinkedDeque<Trace> traces = this.cookieTraces.getUnchecked(u);
                     traces.addFirst(new Trace(new Date(), map));
                     cookieTraces.put(u, traces);
                 });
@@ -66,11 +73,12 @@ public class WebWolfTraceRepository implements TraceRepository {
         }
     }
 
-    private Optional<String> determineUser(String cookiesIncomingRequest) {
+    private Optional<String> findUserBasedOnCookie(String cookiesIncomingRequest) {
         //Request from WebGoat to WebWolf will contain the session cookie of WebGoat try to map it to a user
         //this mapping is added to userSession by the CookieFilter in WebGoat code
-        Optional<Map.Entry<String, String>> userEntry = this.userSessions.entrySet().stream().filter(e -> cookiesIncomingRequest.contains(e.getValue())).findFirst();
-        Optional<String> user = userEntry.map(e -> e.getKey());
+        HttpCookie cookie = HttpCookie.parse(cookiesIncomingRequest).get(0);
+        Optional<WebGoatUserCookie> userToCookie = repository.findByCookie(cookie.getValue());
+        Optional<String> user = userToCookie.map(u -> u.getUsername());
 
         if (!user.isPresent()) {
             //User is maybe logged in to WebWolf use this user

@@ -1,23 +1,16 @@
 package org.owasp.webwolf.mailbox;
 
-import com.hazelcast.core.HazelcastInstance;
-import lombok.AllArgsConstructor;
-import org.owasp.webgoat.plugin.challenge7.Mailbox;
-import org.springframework.stereotype.Component;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.List;
 
 /**
  * @author nbaars
  * @since 8/17/17.
  */
-@Component
-@AllArgsConstructor
-public class MailboxRepository {
+public interface MailboxRepository extends MongoRepository<Email, ObjectId> {
 
-    private final HazelcastInstance hazelcastInstance;
-
-    public Mailbox mailbox(String username) {
-        return (Mailbox) hazelcastInstance.getMap("usersMail").getOrDefault(username, new Mailbox());
-    }
-
+    List<Email> findByRecipient(String recipient);
 
 }

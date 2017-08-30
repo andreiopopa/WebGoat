@@ -49,6 +49,7 @@ public class Scoreboard {
         return challenges.stream()
                 .map(c -> userTracker.getLessonTracker(c))
                 .filter(l -> l.isPresent()).map(l -> l.get())
+                .filter(l -> l.isLessonSolved())
                 .map(l -> l.getLessonName())
                 .map(l -> toLessonTitle(l))
                 .collect(Collectors.toList());
