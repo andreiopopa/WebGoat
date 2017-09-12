@@ -152,11 +152,6 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public HammerHead hammerHead(Course course) {
-        return new HammerHead(course);
-    }
-
-    @Bean
     public LabelDebugger labelDebugger() {
         return new LabelDebugger();
     }

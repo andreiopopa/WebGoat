@@ -3,7 +3,7 @@ package org.owasp.webwolf.mailbox;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.owasp.webgoat.mail.IncomingMailEvent;
-import org.owasp.webwolf.user.WebGoatUserToCookieRepository;
+import org.owasp.webwolf.user.UserRepository;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 public class MailboxListener {
 
     private final MailboxRepository repository;
-    private final WebGoatUserToCookieRepository userRepository;
+    private final UserRepository userRepository;
 
     @JmsListener(destination = "mailbox", containerFactory = "jmsFactory")
     public void incomingMail(IncomingMailEvent event) {
-        if (userRepository.exists(event.getRecipient())) {
+        if (userRepository.findByUsername(event.getRecipient()) != null) {
             Email email = Email.builder()
                     .contents(event.getContents())
                     .sender(event.getSender())
