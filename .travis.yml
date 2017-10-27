@@ -46,4 +46,17 @@ addons:
     build_command_prepend: "mvn clean"
     build_command: "mvn -DskipTests=true package"
     branch_pattern: coverity_scan
+    
+language: java
+ 
+notifications:
+email: false
+ 
+jdk:
+ 
+oraclejdk8
+ 
+script:
+ 
+bash <(curl -s https://blackducksoftware.github.io/hub-detect/hub-detect.sh) --blackduck.hub.url="https://bd-imp-eval17.blackducksoftware.com/" --blackduck.hub.username=a.popa@accenture.com --blackduck.hub.password=blackduck --blackduck.hub.auto.import.cert=true --detect.policy.check=true
 
