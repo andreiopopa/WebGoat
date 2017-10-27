@@ -48,15 +48,10 @@ addons:
     branch_pattern: coverity_scan
     
 language: java
- 
 notifications:
-email: false
- 
+ - email: false
 jdk:
- 
-oraclejdk8
- 
+ - oraclejdk8
 script:
- 
-bash <(curl -s https://blackducksoftware.github.io/hub-detect/hub-detect.sh) --blackduck.hub.url="https://bd-imp-eval17.blackducksoftware.com/" --blackduck.hub.username=a.popa@accenture.com --blackduck.hub.password=blackduck --blackduck.hub.auto.import.cert=true --detect.policy.check=true
+ - bash <(curl -s https://blackducksoftware.github.io/hub-detect/hub-detect.sh) --blackduck.hub.url="https://bd-imp-eval17.blackducksoftware.com/" --blackduck.hub.username=a.popa@accenture.com --blackduck.hub.password=blackduck --blackduck.hub.auto.import.cert=true --detect.policy.check=true
 
